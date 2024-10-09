@@ -28,7 +28,7 @@ char getLetterGrade(double score);
 
 //Write formatted report displaying the name, average, letter grade for each student. 
 //Report also calculate and displays the class average
-void writeReport(string names[], double averages[], char letterG[], int numRec);
+void writeReport(string names[], double averages[], int numRec);
 
 int main()
 {
@@ -46,15 +46,10 @@ int main()
 		exit;
 	}
 
-	// For debugging
-	cout << "Data from file\n";
-	for (int row = 0; row < numRecords; row++)
-	{
-		cout << studentNames[row] << " ";
-		for (int col = 0; col < MAX_SCORES; col++)
-			cout << grades[row][col] << " ";
-		cout << endl;
-	}
+	calcAverages(grades, avgScore, numRecords);
+
+	writeReport(studentNames, avgScore, numRecords);
+	
 }
 
 int getStudentData(string names[], double grades[][MAX_SCORES], int maxRecords)
@@ -84,9 +79,48 @@ int getStudentData(string names[], double grades[][MAX_SCORES], int maxRecords)
 
 	return rec;
 			
-	}
-
-	
-
-
 }
+
+void calcAverages(const double scores[][MAX_SCORES], double averages[], int numRec)
+{
+	double sum;
+	for (int row = 0; row < numRec; row++)
+	{
+		sum = 0;
+		for (int col = 0; col < MAX_SCORES; col++)
+		{
+			sum += scores[row][col];
+		}
+		averages[row] = sum / MAX_SCORES;
+	}
+}
+
+char getLetterGrade(double score)
+{
+	if (score >= 90)
+		return 'A';
+	else if (score >= 80)
+		return 'B';
+	else if (score >= 70)
+		return 'C';
+	else if (score >= 60)
+		return 'D';
+	else
+		return 'F';
+}
+
+void writeReport(string studentNames[], double avgScore[], int numRec)
+{
+	cout << fixed << setprecision(2) << showpoint;
+	cout << "Class Report" << endl;
+	cout << "Student     Average     Grade" << endl;
+	double class_avg = 0;
+	for (int row = 0; row < numRec; row++)
+	{
+		cout << setw(11) << left << studentNames[row];
+		cout << right <<  setw(7) << avgScore[row] << setw(7) << getLetterGrade(avgScore[row]) << endl;
+		class_avg += avgScore[row];
+	}
+	cout << "Class average: " << class_avg / numRec << endl;
+}
+
